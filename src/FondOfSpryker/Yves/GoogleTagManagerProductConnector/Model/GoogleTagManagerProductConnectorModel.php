@@ -21,22 +21,22 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
      * @var \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface
      */
     protected $moneyPlugin;
+
     /**
-     * @var GoogleTagManagerProductConnectorConfig
+     * @var \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig
      */
     private $config;
 
     /**
      * @param \Spryker\Shared\Kernel\Store $store
      * @param \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface $moneyPlugin
-     * @param GoogleTagManagerProductConnectorConfig $config
+     * @param \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig $config
      */
     public function __construct(
         Store $store,
         MoneyPluginInterface $moneyPlugin,
         GoogleTagManagerProductConnectorConfig $config
-    )
-    {
+    ) {
         $this->store = $store;
         $this->moneyPlugin = $moneyPlugin;
         $this->config = $config;
@@ -171,7 +171,7 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
         $itemTransfer = (new ItemTransfer())->fromArray($params, true);
         $currentLocale = $this->store->getCurrentLocale();
         $productAttributesLocalized = $itemTransfer->getAbstractAttributes()[$currentLocale];
-        $languageKey = \explode('_', $currentLocale)[0];
+        $languageKey = explode('_', $currentLocale)[0];
         $hostName = $this->config->getProtocol() . '://' . $_SERVER['HTTP_HOST'];
 
         if (!isset($productAttributesLocalized[ModuleConstants::PARAM_ATTRIBUTE_URL_KEY])) {
@@ -181,7 +181,7 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
         $urlKey = $productAttributesLocalized[ModuleConstants::PARAM_ATTRIBUTE_URL_KEY];
 
         return [
-            ModuleConstants::FIELD_URL => \sprintf('%s/%s/%s', $hostName, $languageKey, $urlKey)
+            ModuleConstants::FIELD_URL => sprintf('%s/%s/%s', $hostName, $languageKey, $urlKey),
         ];
     }
 
