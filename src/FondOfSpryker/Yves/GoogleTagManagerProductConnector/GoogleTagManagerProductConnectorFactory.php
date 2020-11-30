@@ -8,6 +8,9 @@ use Spryker\Shared\Kernel\Store;
 use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
 use Spryker\Yves\Kernel\AbstractFactory;
 
+/**
+ * @method \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig getConfig()
+ */
 class GoogleTagManagerProductConnectorFactory extends AbstractFactory
 {
     /**
@@ -15,7 +18,11 @@ class GoogleTagManagerProductConnectorFactory extends AbstractFactory
      */
     public function createGoogleTagManagerProductConnectorModel(): GoogleTagManagerProductConnectorModelInterface
     {
-        return new GoogleTagManagerProductConnectorModel($this->getStore(), $this->getMoneyPlugin());
+        return new GoogleTagManagerProductConnectorModel(
+            $this->getStore(),
+            $this->getMoneyPlugin(),
+            $this->getConfig()
+        );
     }
 
     /**

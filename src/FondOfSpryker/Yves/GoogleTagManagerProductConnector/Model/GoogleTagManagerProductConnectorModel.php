@@ -3,6 +3,7 @@
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector\Model;
 
 use FondOfSpryker\Shared\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConstants as ModuleConstants;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig;
 use Generated\Shared\Transfer\ItemTransfer;
 use Generated\Shared\Transfer\ProductImageStorageTransfer;
 use Generated\Shared\Transfer\ProductImageTransfer;
@@ -20,15 +21,25 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
      * @var \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface
      */
     protected $moneyPlugin;
+    /**
+     * @var GoogleTagManagerProductConnectorConfig
+     */
+    private $config;
 
     /**
      * @param \Spryker\Shared\Kernel\Store $store
      * @param \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface $moneyPlugin
+     * @param GoogleTagManagerProductConnectorConfig $config
      */
-    public function __construct(Store $store, MoneyPluginInterface $moneyPlugin)
+    public function __construct(
+        Store $store,
+        MoneyPluginInterface $moneyPlugin,
+        GoogleTagManagerProductConnectorConfig $config
+    )
     {
         $this->store = $store;
         $this->moneyPlugin = $moneyPlugin;
+        $this->config = $config;
     }
 
     /**
@@ -41,16 +52,18 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
     {
         $itemTransfer = (new ItemTransfer())->fromArray($params, true);
         $currentLocale = $this->store->getCurrentLocale();
+        $productAttributesUnlocalized = $itemTransfer->getAbstractAttributes()[ModuleConstants::ABSTRACT_ATTRIBUTES_UNLOCALIZED];
+        $productAttributesLocalized = $itemTransfer->getAbstractAttributes()[$currentLocale];
 
-        if (isset($itemTransfer->getAbstractAttributes()[ModuleConstants::ABSTRACT_ATTRIBUTES_UNLOCALIZED][ModuleConstants::PARAM_ATTRIBUTE_BRAND])) {
+        if (isset($productAttributesUnlocalized[ModuleConstants::PARAM_ATTRIBUTE_BRAND])) {
             return [
-                ModuleConstants::FIELD_BRAND => $itemTransfer->getAbstractAttributes()[ModuleConstants::ABSTRACT_ATTRIBUTES_UNLOCALIZED][ModuleConstants::PARAM_ATTRIBUTE_BRAND],
+                ModuleConstants::FIELD_BRAND => $productAttributesUnlocalized[ModuleConstants::PARAM_ATTRIBUTE_BRAND],
             ];
         }
 
-        if (isset($itemTransfer->getAbstractAttributes()[$currentLocale][ModuleConstants::PARAM_ATTRIBUTE_BRAND])) {
+        if (isset($productAttributesLocalized[ModuleConstants::PARAM_ATTRIBUTE_BRAND])) {
             return [
-                ModuleConstants::FIELD_BRAND => $itemTransfer->getAbstractAttributes()[$currentLocale][ModuleConstants::PARAM_ATTRIBUTE_BRAND],
+                ModuleConstants::FIELD_BRAND => $productAttributesLocalized[ModuleConstants::PARAM_ATTRIBUTE_BRAND],
             ];
         }
 
@@ -158,6 +171,8 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
         $itemTransfer = (new ItemTransfer())->fromArray($params, true);
         $currentLocale = $this->store->getCurrentLocale();
         $productAttributesLocalized = $itemTransfer->getAbstractAttributes()[$currentLocale];
+        $languageKey = \explode('_', $currentLocale)[0];
+        $hostName = $this->config->getProtocol() . '://' . $_SERVER['HTTP_HOST'];
 
         if (!isset($productAttributesLocalized[ModuleConstants::PARAM_ATTRIBUTE_URL_KEY])) {
             return [];
@@ -165,7 +180,9 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
 
         $urlKey = $productAttributesLocalized[ModuleConstants::PARAM_ATTRIBUTE_URL_KEY];
 
-        return [];
+        return [
+            ModuleConstants::FIELD_URL => \sprintf('%s/%s/%s', $hostName, $languageKey, $urlKey)
+        ];
     }
 
     /**

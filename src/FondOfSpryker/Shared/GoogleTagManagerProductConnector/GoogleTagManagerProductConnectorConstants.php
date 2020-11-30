@@ -22,4 +22,7 @@ interface GoogleTagManagerProductConnectorConstants
     public const FIELD_PRICE_EXCLUDING_TAX = 'priceRxcludingTax';
     public const FIELD_TAX = 'tax';
     public const FIELD_TAX_RATE = 'taxRate';
+    public const FIELD_URL = 'url';
+
+    public const PROTOCOL = 'PROTOCOL';
 }
