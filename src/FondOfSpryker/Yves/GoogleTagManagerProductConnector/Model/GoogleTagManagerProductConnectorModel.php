@@ -107,10 +107,7 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
     public function getImageUrl(string $page, array $params): array
     {
         $itemTransfer = (new ItemTransfer())->fromArray($params, true);
-
-        foreach ($itemTransfer->getImages() as $imageTransfer) {
-            break;
-        }
+        $imageTransfer = isset($itemTransfer->getImages()[0]) ? $itemTransfer->getImages()[0] : null;
 
         if ($imageTransfer instanceof ProductImageTransfer) {
             return [ModuleConstants::FIELD_IMAGE_URL => $imageTransfer->getExternalUrlSmall()];
