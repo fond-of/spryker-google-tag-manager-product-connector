@@ -167,7 +167,7 @@ class GoogleTagManagerProductConnectorModel implements GoogleTagManagerProductCo
         $currentLocale = $this->store->getCurrentLocale();
         $productAttributesLocalized = $itemTransfer->getAbstractAttributes()[$currentLocale];
         $languageKey = explode('_', $currentLocale)[0];
-        $hostName = $this->config->getProtocol() . '://' . $_SERVER['HTTP_HOST'];
+        $hostName = $this->config->getProtocol() . ':// ' . $_SERVER['HTTP_HOST'];
 
         if (!isset($productAttributesLocalized[ModuleConstants::PARAM_ATTRIBUTE_URL_KEY])) {
             return [];

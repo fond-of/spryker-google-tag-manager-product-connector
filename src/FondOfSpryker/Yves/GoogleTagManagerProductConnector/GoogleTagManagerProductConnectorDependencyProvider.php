@@ -2,6 +2,7 @@
 
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector;
 
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorBridge;
 use Spryker\Shared\Kernel\Store;
 use Spryker\Yves\Kernel\AbstractBundleDependencyProvider;
 use Spryker\Yves\Kernel\Container;
@@ -11,6 +12,7 @@ class GoogleTagManagerProductConnectorDependencyProvider extends AbstractBundleD
 {
     public const STORE = 'STORE';
     public const PLUGIN_MONEY = 'PLUGIN_MONEY';
+    public const CLIENT_TAX_PRODUCT_CONNECTOR = 'CLIENT_TAX_PRODUCT_CONNECTOR';
 
     /**
      * @param \Spryker\Yves\Kernel\Container $container
@@ -21,6 +23,7 @@ class GoogleTagManagerProductConnectorDependencyProvider extends AbstractBundleD
     {
         $container = $this->addStore($container);
         $container = $this->addMoneyPlugin($container);
+        $container = $this->addTaxProductConnectorClient($container);
 
         return $container;
     }
@@ -48,6 +51,22 @@ class GoogleTagManagerProductConnectorDependencyProvider extends AbstractBundleD
     {
         $container->set(static::PLUGIN_MONEY, static function () {
             return new MoneyPlugin();
+        });
+
+        return $container;
+    }
+
+    /**
+     * @param Container $container
+     * @return Container
+     * @throws \Spryker\Service\Container\Exception\FrozenServiceException
+     */
+    protected function addTaxProductConnectorClient(Container $container): Container
+    {
+        $container->set(static::CLIENT_TAX_PRODUCT_CONNECTOR, static function(Container $container) {
+            return new GoogleTagManagerProductConnectorToTaxProductConnectorBridge(
+                $container->getLocator()->taxProductConnector()->client()
+            );
         });
 
         return $container;

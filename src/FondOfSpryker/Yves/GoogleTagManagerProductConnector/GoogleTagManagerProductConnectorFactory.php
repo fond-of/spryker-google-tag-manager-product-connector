@@ -2,11 +2,12 @@
 
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector;
 
-use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Model\GoogleTagManagerProductConnectorModel;
-use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Model\GoogleTagManagerProductConnectorModelInterface;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
 use Spryker\Shared\Kernel\Store;
 use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
 use Spryker\Yves\Kernel\AbstractFactory;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpander;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpanderInterface;
 
 /**
  * @method \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig getConfig()
@@ -14,14 +15,14 @@ use Spryker\Yves\Kernel\AbstractFactory;
 class GoogleTagManagerProductConnectorFactory extends AbstractFactory
 {
     /**
-     * @return \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Model\GoogleTagManagerProductConnectorModelInterface
+     * @return DataLayerExpanderInterface
      */
-    public function createGoogleTagManagerProductConnectorModel(): GoogleTagManagerProductConnectorModelInterface
+    public function createDataLayerExpander(): DataLayerExpanderInterface
     {
-        return new GoogleTagManagerProductConnectorModel(
+        return new DataLayerExpander(
             $this->getStore(),
             $this->getMoneyPlugin(),
-            $this->getConfig()
+            $this->getTaxProductConnectorClient()
         );
     }
 
@@ -39,5 +40,14 @@ class GoogleTagManagerProductConnectorFactory extends AbstractFactory
     public function getMoneyPlugin(): MoneyPluginInterface
     {
         return $this->getProvidedDependency(GoogleTagManagerProductConnectorDependencyProvider::PLUGIN_MONEY);
+    }
+
+    /**
+     * @return GoogleTagManagerProductConnectorToTaxProductConnectorInterface
+     * @throws \Spryker\Yves\Kernel\Exception\Container\ContainerKeyNotFoundException
+     */
+    public function getTaxProductConnectorClient(): GoogleTagManagerProductConnectorToTaxProductConnectorInterface
+    {
+        return $this->getProvidedDependency(GoogleTagManagerProductConnectorDependencyProvider::CLIENT_TAX_PRODUCT_CONNECTOR);
     }
 }
