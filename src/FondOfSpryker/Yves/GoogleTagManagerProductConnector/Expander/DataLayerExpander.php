@@ -2,48 +2,35 @@
 
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander;
 
-use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
-use FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig;
-use Generated\Shared\Transfer\ItemTransfer;
-use Generated\Shared\Transfer\ProductAbstractTransfer;
-use Generated\Shared\Transfer\ProductViewTransfer;
-use Spryker\Shared\Kernel\Store;
-use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
 use FondOfSpryker\Shared\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConstants as ModuleConstants;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
+use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
 
 class DataLayerExpander implements DataLayerExpanderInterface
 {
-    /**
-     * @var \Spryker\Shared\Kernel\Store
-     */
-    protected $store;
-
     /**
      * @var \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface
      */
     protected $moneyPlugin;
 
     /**
-     * @var GoogleTagManagerProductConnectorToTaxProductConnectorInterface
+     * @var \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface
      */
     protected $taxProductConnectorClient;
 
     /**
-     * @var null|ProductViewTransfer
+     * @var \Generated\Shared\Transfer\ProductViewTransfer|null
      */
     protected $productViewTransfer;
 
     /**
-     * @param \Spryker\Shared\Kernel\Store $store
      * @param \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface $moneyPlugin
-     * @param \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig $config
+     * @param \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface $taxProductConnectorClient
      */
     public function __construct(
-        Store $store,
         MoneyPluginInterface $moneyPlugin,
         GoogleTagManagerProductConnectorToTaxProductConnectorInterface $taxProductConnectorClient
     ) {
-        $this->store = $store;
         $this->moneyPlugin = $moneyPlugin;
         $this->taxProductConnectorClient = $taxProductConnectorClient;
     }
@@ -69,18 +56,18 @@ class DataLayerExpander implements DataLayerExpanderInterface
     {
         $this->setProductViewTransfer($twigVariableBag);
 
-        if (!$this->productViewTransfer) {
-            return $dataLayer;
-        }
+        $var = [
+            ModuleConstants::PARAM_PRODUCT => $this->productViewTransfer->toArray(),
+            ModuleConstants::PARAM_PRODUCT_ABSTRACT => $twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT]->toArray(),
+        ];
 
         $dataLayer[ModuleConstants::FIELD_ID] = $this->productViewTransfer->getIdProductAbstract();
         $dataLayer[ModuleConstants::FIELD_NAME] = $this->getName($twigVariableBag);
-        $dataLayer[ModuleConstants::FIELD_EAN] = $this->getAttrEan();
-        $dataLayer[ModuleConstants::FIELD_BRAND] = $this->getAttrBrand();
         $dataLayer[ModuleConstants::FIELD_SKU] = $this->productViewTransfer->getSku();
-        $dataLayer[ModuleConstants::FIELD_IMAGE_URL] = $this->getImageUrl();
         $dataLayer[ModuleConstants::FIELD_PRICE] = $this->getPrice();
-        $dataLayer[ModuleConstants::FIELD_PRICE_EXCLUDING_TAX] = $this->getPriceExcludingTax();
+        $dataLayer[ModuleConstants::FIELD_PRICE_EXCLUDING_TAX] = $this->getPriceExcludingTax($twigVariableBag);
+        $dataLayer[ModuleConstants::FIELD_TAX_RATE] = $this->getTaxRate($twigVariableBag);
+        $dataLayer[ModuleConstants::FIELD_TAX_AMOUNT] = $this->getTaxAmount($twigVariableBag);
 
         return $dataLayer;
     }
@@ -88,31 +75,7 @@ class DataLayerExpander implements DataLayerExpanderInterface
     /**
      * @return string
      */
-    public function getAttrBrand(): string
-    {
-        if (isset($this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_BRAND])) {
-            return $this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_BRAND];
-        }
-
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getAttrEan(): string
-    {
-        if (isset($this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_EAN])) {
-            return $this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_EAN];
-        }
-
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
+    protected function getName(): string
     {
         if (isset($this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_NAME_UNTRANSLATED])) {
             return $this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_NAME_UNTRANSLATED];
@@ -122,38 +85,50 @@ class DataLayerExpander implements DataLayerExpanderInterface
     }
 
     /**
-     * @return string
-     */
-    public function getImageUrl(): string
-    {
-        if (isset($this->productViewTransfer->getImageSets()['BASEIMAGE'])) {
-            foreach ($this->productViewTransfer->getImageSets()['BASEIMAGE'] as $transfer) {
-                return $transfer->getExternalUrlSmall();
-            }
-        }
-
-        return '';
-    }
-
-    /**
      * @return int
      */
-    public function getPrice(): int
+    protected function getPrice(): float
     {
         return $this->moneyPlugin->convertIntegerToDecimal($this->productViewTransfer->getPrice());
     }
 
     /**
-     * @return int
+     * @param array $twigVariableBag
+     *
+     * @return float
      */
-    public function getPriceExcludingTax(): int
+    protected function getPriceExcludingTax(array $twigVariableBag): float
     {
-        $productAbstractTransfer = (new ProductAbstractTransfer())
-            ->fromArray($this->productViewTransfer->toArray(), true);
-
         return $this->moneyPlugin->convertIntegerToDecimal(
-            $this->taxProductConnectorClient->getNetPriceForProduct($productAbstractTransfer)
+            $this->taxProductConnectorClient
+                ->getNetPriceForProduct($twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT])
                 ->getNetPrice()
         );
+    }
+
+    /**
+     * @param array $twigVariableBag
+     *
+     * @return float
+     */
+    protected function getTaxRate(array $twigVariableBag): float
+    {
+        return $this->taxProductConnectorClient
+            ->getNetPriceForProduct($twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT])
+            ->getTaxRate();
+    }
+
+    /**
+     * @param array $twigVariableBag
+     *
+     * @return float
+     */
+    protected function getTaxAmount(array $twigVariableBag): float
+    {
+        $taxAmount = $this->taxProductConnectorClient
+            ->getTaxAmountForProduct($twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT])
+            ->getTaxAmount();
+
+        return $this->moneyPlugin->convertIntegerToDecimal($taxAmount);
     }
 }

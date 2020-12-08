@@ -2,10 +2,11 @@
 
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector\Plugin\DataLayer;
 
+use FondOfSpryker\Shared\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConstants as ModuleConstants;
 use FondOfSpryker\Yves\GoogleTagManagerExtension\Dependency\GoogleTagManagerDataLayerExpanderPluginInterface;
+use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Generated\Shared\Transfer\ProductViewTransfer;
 use Spryker\Yves\Kernel\AbstractPlugin;
-use FondOfSpryker\Shared\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConstants as ModuleConstants;
 
 /**
  * @method \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorFactory getFactory()
@@ -22,7 +23,9 @@ class ProductDataLayerExpanderPlugin extends AbstractPlugin implements GoogleTag
     {
         return $pageType === ModuleConstants::PAGE_TYPE_PRODUCT
             && isset($twigVariableBag[ModuleConstants::PARAM_PRODUCT])
-            && $twigVariableBag[ModuleConstants::PARAM_PRODUCT] instanceof ProductViewTransfer;
+            && $twigVariableBag[ModuleConstants::PARAM_PRODUCT] instanceof ProductViewTransfer
+            && isset($twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT])
+            && $twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT] instanceof ProductAbstractTransfer;
     }
 
     /**

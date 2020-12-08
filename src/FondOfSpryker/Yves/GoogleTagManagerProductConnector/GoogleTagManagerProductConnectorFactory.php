@@ -3,11 +3,10 @@
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector;
 
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
-use Spryker\Shared\Kernel\Store;
-use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
-use Spryker\Yves\Kernel\AbstractFactory;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpander;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpanderInterface;
+use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
+use Spryker\Yves\Kernel\AbstractFactory;
 
 /**
  * @method \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig getConfig()
@@ -15,23 +14,14 @@ use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpand
 class GoogleTagManagerProductConnectorFactory extends AbstractFactory
 {
     /**
-     * @return DataLayerExpanderInterface
+     * @return \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpanderInterface
      */
     public function createDataLayerExpander(): DataLayerExpanderInterface
     {
         return new DataLayerExpander(
-            $this->getStore(),
             $this->getMoneyPlugin(),
             $this->getTaxProductConnectorClient()
         );
-    }
-
-    /**
-     * @return \Spryker\Shared\Kernel\Store
-     */
-    public function getStore(): Store
-    {
-        return $this->getProvidedDependency(GoogleTagManagerProductConnectorDependencyProvider::STORE);
     }
 
     /**
@@ -43,8 +33,7 @@ class GoogleTagManagerProductConnectorFactory extends AbstractFactory
     }
 
     /**
-     * @return GoogleTagManagerProductConnectorToTaxProductConnectorInterface
-     * @throws \Spryker\Yves\Kernel\Exception\Container\ContainerKeyNotFoundException
+     * @return \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface
      */
     public function getTaxProductConnectorClient(): GoogleTagManagerProductConnectorToTaxProductConnectorInterface
     {

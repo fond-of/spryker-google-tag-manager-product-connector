@@ -15,13 +15,13 @@ class GoogleTagManagerProductConnectorToTaxProductConnectorBridge implements Goo
     }
 
     /**
-     * @param \Generated\Shared\Transfer\ProductAbstractTransfer $productTransfer
+     * @param \Generated\Shared\Transfer\ProductAbstractTransfer $productAbstractTransfer
      *
      * @return \Generated\Shared\Transfer\ProductAbstractTransfer
      */
-    public function getNetPriceForProduct(ProductAbstractTransfer $productTransfer): ProductAbstractTransfer
+    public function getNetPriceForProduct(ProductAbstractTransfer $productAbstractTransfer): ProductAbstractTransfer
     {
-        return $this->taxProductConnectorClient->getNetPriceForProduct($productTransfer);
+        return $this->taxProductConnectorClient->getNetPriceForProduct($productAbstractTransfer);
     }
 
     /**
@@ -33,6 +33,4 @@ class GoogleTagManagerProductConnectorToTaxProductConnectorBridge implements Goo
     {
         return $this->taxProductConnectorClient->getTaxAmountForProduct($productTransfer);
     }
-
-
 }

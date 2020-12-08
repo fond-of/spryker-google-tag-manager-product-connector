@@ -14,4 +14,12 @@ class GoogleTagManagerProductConnectorConfig extends AbstractBundleConfig
     {
         return $this->get(GoogleTagManagerProductConnectorConstants::PROTOCOL, 'http');
     }
+
+    /**
+     * @return int
+     */
+    public function getDefaultTaxRate(): int
+    {
+        return $this->get(GoogleTagManagerProductConnectorConstants::DEFAULT_TAX_RATE, 0);
+    }
 }
