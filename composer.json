@@ -12,7 +12,6 @@
     "php": ">=7.2",
     "spryker/money": "^2.9.0",
     "fond-of-spryker/google-tag-manager-extension": "dev-main",
-    "spryker/store": "^1.12.0",
     "fond-of-spryker/tax-product-connector": "dev-feature/paypal-refund"
   },
   "require-dev": {
