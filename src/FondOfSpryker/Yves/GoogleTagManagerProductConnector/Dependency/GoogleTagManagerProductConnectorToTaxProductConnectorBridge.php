@@ -7,6 +7,9 @@ use Generated\Shared\Transfer\ProductAbstractTransfer;
 
 class GoogleTagManagerProductConnectorToTaxProductConnectorBridge implements GoogleTagManagerProductConnectorToTaxProductConnectorInterface
 {
+    /**
+     * @var \FondOfSpryker\Client\TaxProductConnector\TaxProductConnectorClientInterface
+     */
     protected $taxProductConnectorClient;
 
     public function __construct(TaxProductConnectorClientInterface $taxProductConnectorClient)
