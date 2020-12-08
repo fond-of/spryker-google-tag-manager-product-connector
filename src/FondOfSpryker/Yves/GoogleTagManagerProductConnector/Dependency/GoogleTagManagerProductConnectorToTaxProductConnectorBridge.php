@@ -12,6 +12,9 @@ class GoogleTagManagerProductConnectorToTaxProductConnectorBridge implements Goo
      */
     protected $taxProductConnectorClient;
 
+    /**
+     * @param \FondOfSpryker\Client\TaxProductConnector\TaxProductConnectorClientInterface $taxProductConnectorClient
+     */
     public function __construct(TaxProductConnectorClientInterface $taxProductConnectorClient)
     {
         $this->taxProductConnectorClient = $taxProductConnectorClient;
