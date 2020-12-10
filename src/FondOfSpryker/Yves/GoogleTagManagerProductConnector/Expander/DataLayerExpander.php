@@ -56,11 +56,6 @@ class DataLayerExpander implements DataLayerExpanderInterface
     {
         $this->setProductViewTransfer($twigVariableBag);
 
-        $var = [
-            ModuleConstants::PARAM_PRODUCT => $this->productViewTransfer->toArray(),
-            ModuleConstants::PARAM_PRODUCT_ABSTRACT => $twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT]->toArray(),
-        ];
-
         $dataLayer[ModuleConstants::FIELD_ID] = $this->productViewTransfer->getIdProductAbstract();
         $dataLayer[ModuleConstants::FIELD_NAME] = $this->getName($twigVariableBag);
         $dataLayer[ModuleConstants::FIELD_SKU] = $this->productViewTransfer->getSku();
