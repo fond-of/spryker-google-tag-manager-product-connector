@@ -10,7 +10,8 @@
   ],
   "require": {
     "php": ">=7.2",
-    "fond-of-spryker/google-tag-manager-extension": "dev-main"
+    "fond-of-spryker/google-tag-manager-extension": "dev-main",
+    "fond-of-spryker/tax-product-connector": "dev-feature/paypal-refund"
   },
   "require-dev": {
     "spryker/code-sniffer": "^0.14.7",
