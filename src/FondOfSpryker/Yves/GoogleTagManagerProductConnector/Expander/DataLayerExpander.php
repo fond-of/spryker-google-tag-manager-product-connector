@@ -3,15 +3,15 @@
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander;
 
 use FondOfSpryker\Shared\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConstants as ModuleConstants;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverterInterface;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
-use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
 
 class DataLayerExpander implements DataLayerExpanderInterface
 {
     /**
-     * @var \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface
+     * @var \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverterInterface
      */
-    protected $moneyPlugin;
+    protected $integerToDecimalConverter;
 
     /**
      * @var \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface
@@ -24,14 +24,14 @@ class DataLayerExpander implements DataLayerExpanderInterface
     protected $productViewTransfer;
 
     /**
-     * @param \Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface $moneyPlugin
+     * @param \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverterInterface $integerToDecimalConverter
      * @param \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface $taxProductConnectorClient
      */
     public function __construct(
-        MoneyPluginInterface $moneyPlugin,
+        IntegerToDecimalConverterInterface $integerToDecimalConverter,
         GoogleTagManagerProductConnectorToTaxProductConnectorInterface $taxProductConnectorClient
     ) {
-        $this->moneyPlugin = $moneyPlugin;
+        $this->integerToDecimalConverter = $integerToDecimalConverter;
         $this->taxProductConnectorClient = $taxProductConnectorClient;
     }
 
@@ -58,6 +58,7 @@ class DataLayerExpander implements DataLayerExpanderInterface
 
         $dataLayer[ModuleConstants::FIELD_ID] = $this->productViewTransfer->getIdProductAbstract();
         $dataLayer[ModuleConstants::FIELD_NAME] = $this->getName($twigVariableBag);
+        $dataLayer[ModuleConstants::FIELD_CONTENT_TYPE] = $this->getProductAttrStyle();
         $dataLayer[ModuleConstants::FIELD_SKU] = $this->productViewTransfer->getSku();
         $dataLayer[ModuleConstants::FIELD_PRICE] = $this->getPrice();
         $dataLayer[ModuleConstants::FIELD_PRICE_EXCLUDING_TAX] = $this->getPriceExcludingTax($twigVariableBag);
@@ -84,7 +85,7 @@ class DataLayerExpander implements DataLayerExpanderInterface
      */
     protected function getPrice(): float
     {
-        return $this->moneyPlugin->convertIntegerToDecimal($this->productViewTransfer->getPrice());
+        return $this->integerToDecimalConverter->convert($this->productViewTransfer->getPrice());
     }
 
     /**
@@ -94,7 +95,7 @@ class DataLayerExpander implements DataLayerExpanderInterface
      */
     protected function getPriceExcludingTax(array $twigVariableBag): float
     {
-        return $this->moneyPlugin->convertIntegerToDecimal(
+        return $this->integerToDecimalConverter->convert(
             $this->taxProductConnectorClient
                 ->getNetPriceForProduct($twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT])
                 ->getNetPrice()
@@ -124,6 +125,30 @@ class DataLayerExpander implements DataLayerExpanderInterface
             ->getTaxAmountForProduct($twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT])
             ->getTaxAmount();
 
-        return $this->moneyPlugin->convertIntegerToDecimal($taxAmount);
+        return $this->integerToDecimalConverter->convert($taxAmount);
+    }
+
+    /**
+     * @param array $product
+     *
+     * @return string
+     */
+    protected function getProductAttrStyle(): string
+    {
+        $productAttributes = $this->productViewTransfer->getAttributes();
+
+        if (!$productAttributes || count($productAttributes) === 0) {
+            return '';
+        }
+
+        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_STYLE_UNTRANSLATED])) {
+            return $productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_STYLE_UNTRANSLATED];
+        }
+
+        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_STYLE])) {
+            return $productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_STYLE];
+        }
+
+        return '';
     }
 }

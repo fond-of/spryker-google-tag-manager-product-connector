@@ -4,17 +4,17 @@ namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander;
 
 use Codeception\Test\Unit;
 use FondOfSpryker\Shared\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConstants as ModuleConstants;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverter;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
 use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Generated\Shared\Transfer\ProductViewTransfer;
-use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
 
 class DataLayerExpanderTest extends Unit
 {
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Yves\EnhancedEcommerceCartConnector\Converter\IntegerToDecimalConverterInterface
      */
-    protected $moneyPluginMock;
+    protected $integerToDecimalConverterMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface
@@ -41,7 +41,7 @@ class DataLayerExpanderTest extends Unit
      */
     protected function _before(): void
     {
-        $this->moneyPluginMock = $this->getMockBuilder(MoneyPluginInterface::class)
+        $this->integerToDecimalConverterMock = $this->getMockBuilder(IntegerToDecimalConverter::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -57,7 +57,10 @@ class DataLayerExpanderTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->expander = new DataLayerExpander($this->moneyPluginMock, $this->taxProductConnectorClientMock);
+        $this->expander = new DataLayerExpander(
+            $this->integerToDecimalConverterMock,
+            $this->taxProductConnectorClientMock
+        );
     }
 
     /**
@@ -73,8 +76,8 @@ class DataLayerExpanderTest extends Unit
             ->method('getPrice')
             ->willReturn(3999);
 
-        $this->moneyPluginMock->expects($this->atLeastOnce())
-            ->method('convertIntegerToDecimal')
+        $this->integerToDecimalConverterMock->expects($this->atLeastOnce())
+            ->method('convert')
             ->willReturn(39.99);
 
         $this->taxProductConnectorClientMock->expects($this->atLeastOnce())

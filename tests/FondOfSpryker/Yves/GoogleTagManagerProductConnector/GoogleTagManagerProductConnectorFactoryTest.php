@@ -3,9 +3,10 @@
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector;
 
 use Codeception\Test\Unit;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverter;
+use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverterInterface;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpanderInterface;
-use Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface;
 use Spryker\Yves\Kernel\Container;
 
 class GoogleTagManagerProductConnectorFactoryTest extends Unit
@@ -21,9 +22,9 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
     protected $containerMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Shared\Money\Dependency\Plugin\MoneyPluginInterface
+     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverterInterface
      */
-    protected $moneyPluginMock;
+    protected $integerToDecimalConverterMock;
 
     /**
      * @var \FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorFactory
@@ -43,7 +44,7 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->moneyPluginMock = $this->getMockBuilder(MoneyPluginInterface::class)
+        $this->integerToDecimalConverterMock = $this->getMockBuilder(IntegerToDecimalConverter::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -62,7 +63,7 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
 
         $this->containerMock->expects($this->atLeastOnce())
             ->method('get')
-            ->willReturn($this->moneyPluginMock, $this->taxProductConnectorClient);
+            ->willReturn($this->integerToDecimalConverterMock, $this->taxProductConnectorClient);
 
         $this->assertInstanceOf(
             DataLayerExpanderInterface::class,
@@ -73,7 +74,7 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
     /**
      * @return void
      */
-    public function testGetMoneyPlugin(): void
+    public function testGetIntegerToDecimalConverter(): void
     {
         $this->containerMock->expects($this->atLeastOnce())
             ->method('has')
@@ -81,11 +82,11 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
 
         $this->containerMock->expects($this->atLeastOnce())
             ->method('get')
-            ->willReturn($this->moneyPluginMock);
+            ->willReturn($this->integerToDecimalConverterMock);
 
         $this->assertInstanceOf(
-            MoneyPluginInterface::class,
-            $this->factory->getMoneyPlugin()
+            IntegerToDecimalConverterInterface::class,
+            $this->factory->getIntegerToDecimalConverter()
         );
     }
 
