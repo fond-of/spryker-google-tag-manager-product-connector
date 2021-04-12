@@ -3,7 +3,6 @@
 namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector;
 
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverterInterface;
-use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpander;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpanderInterface;
 use Spryker\Yves\Kernel\AbstractFactory;
@@ -18,10 +17,7 @@ class GoogleTagManagerProductConnectorFactory extends AbstractFactory
      */
     public function createDataLayerExpander(): DataLayerExpanderInterface
     {
-        return new DataLayerExpander(
-            $this->getIntegerToDecimalConverter(),
-            $this->getTaxProductConnectorClient()
-        );
+        return new DataLayerExpander($this->getIntegerToDecimalConverter());
     }
 
     /**
@@ -30,13 +26,5 @@ class GoogleTagManagerProductConnectorFactory extends AbstractFactory
     public function getIntegerToDecimalConverter(): IntegerToDecimalConverterInterface
     {
         return $this->getProvidedDependency(GoogleTagManagerProductConnectorDependencyProvider::CONVERTER_INTERGER_TO_DECIMAL);
-    }
-
-    /**
-     * @return \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface
-     */
-    public function getTaxProductConnectorClient(): GoogleTagManagerProductConnectorToTaxProductConnectorInterface
-    {
-        return $this->getProvidedDependency(GoogleTagManagerProductConnectorDependencyProvider::CLIENT_TAX_PRODUCT_CONNECTOR);
     }
 }

@@ -35,7 +35,6 @@ class ProductAbstractTwigParameterBagExpanderPlugin extends AbstractPlugin imple
     public function expand($twigVariableBag): array
     {
          $twigVariableBag[ModuleConstants::PARAM_PRODUCT_ABSTRACT] = (new ProductAbstractTransfer())
-            ->setTaxRate($this->getConfig()->getDefaultTaxRate())
             ->fromArray($twigVariableBag[ModuleConstants::PARAM_PRODUCT]->toArray(), true);
 
         return $twigVariableBag;

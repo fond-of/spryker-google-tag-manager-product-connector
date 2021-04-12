@@ -12,8 +12,5 @@
     </transfer>
 
     <transfer name="ProductAbstract">
-        <property name="netPrice" type="int"/>
-        <property name="taxAmount" type="int"/>
-        <property name="taxRate" type="int"/>
     </transfer>
 </transfers>

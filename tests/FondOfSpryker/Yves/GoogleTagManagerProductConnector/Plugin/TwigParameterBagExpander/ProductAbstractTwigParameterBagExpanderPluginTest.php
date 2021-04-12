@@ -6,6 +6,7 @@ use Codeception\Test\Unit;
 use FondOfSpryker\Shared\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConstants as ModuleConstants;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorFactory;
+use Generated\Shared\Transfer\ProductAbstractTransfer;
 use Generated\Shared\Transfer\ProductViewTransfer;
 
 class ProductAbstractTwigParameterBagExpanderPluginTest extends Unit
@@ -58,10 +59,10 @@ class ProductAbstractTwigParameterBagExpanderPluginTest extends Unit
      */
     public function testExpand(): void
     {
-        $this->configMock->expects($this->atLeastOnce())
-            ->method('getDefaultTaxRate')
-            ->willReturn(16);
+        $response = $this->plugin->expand([ModuleConstants::PARAM_PRODUCT => new ProductViewTransfer()]);
 
-        $this->plugin->expand([ModuleConstants::PARAM_PRODUCT => new ProductViewTransfer()]);
+        static::assertIsArray($response);
+        static::assertArrayHasKey(ModuleConstants::PARAM_PRODUCT_ABSTRACT, $response);
+        static::assertInstanceOf(ProductAbstractTransfer::class, $response[ModuleConstants::PARAM_PRODUCT_ABSTRACT]);
     }
 }
