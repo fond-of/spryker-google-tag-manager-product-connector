@@ -5,17 +5,11 @@ namespace FondOfSpryker\Yves\GoogleTagManagerProductConnector;
 use Codeception\Test\Unit;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverter;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Converter\IntegerToDecimalConverterInterface;
-use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface;
 use FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpanderInterface;
 use Spryker\Yves\Kernel\Container;
 
 class GoogleTagManagerProductConnectorFactoryTest extends Unit
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Yves\GoogleTagManagerProductConnector\Dependency\GoogleTagManagerProductConnectorToTaxProductConnectorInterface
-     */
-    protected $taxProductConnectorClient;
-
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Yves\Kernel\Container
      */
@@ -36,10 +30,6 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
      */
     protected function _before(): void
     {
-        $this->taxProductConnectorClient = $this->getMockBuilder(GoogleTagManagerProductConnectorToTaxProductConnectorInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $this->containerMock = $this->getMockBuilder(Container::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -61,9 +51,9 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
             ->method('has')
             ->willReturn(true);
 
-        $this->containerMock->expects($this->atLeastOnce())
+        $this->containerMock->expects(static::atLeastOnce())
             ->method('get')
-            ->willReturn($this->integerToDecimalConverterMock, $this->taxProductConnectorClient);
+            ->willReturn($this->integerToDecimalConverterMock);
 
         $this->assertInstanceOf(
             DataLayerExpanderInterface::class,
@@ -80,32 +70,14 @@ class GoogleTagManagerProductConnectorFactoryTest extends Unit
             ->method('has')
             ->willReturn(true);
 
-        $this->containerMock->expects($this->atLeastOnce())
+        $this->containerMock->expects(static::atLeastOnce())
             ->method('get')
-            ->willReturn($this->integerToDecimalConverterMock);
+            ->withConsecutive([GoogleTagManagerProductConnectorDependencyProvider::CONVERTER_INTERGER_TO_DECIMAL])
+            ->willReturnOnConsecutiveCalls($this->integerToDecimalConverterMock);
 
         $this->assertInstanceOf(
             IntegerToDecimalConverterInterface::class,
             $this->factory->getIntegerToDecimalConverter()
-        );
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetTaxProductConnectorClient(): void
-    {
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('has')
-            ->willReturn(true);
-
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('get')
-            ->willReturn($this->taxProductConnectorClient);
-
-        $this->assertInstanceOf(
-            GoogleTagManagerProductConnectorToTaxProductConnectorInterface::class,
-            $this->factory->getTaxProductConnectorClient()
         );
     }
 }
