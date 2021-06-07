@@ -69,7 +69,7 @@ class DataLayerExpander implements DataLayerExpanderInterface
     }
 
     /**
-     * @return int
+     * @return float
      */
     protected function getPrice(): float
     {
@@ -77,15 +77,13 @@ class DataLayerExpander implements DataLayerExpanderInterface
     }
 
     /**
-     * @param array $product
-     *
      * @return string
      */
     protected function getProductAttrStyle(): string
     {
         $productAttributes = $this->productViewTransfer->getAttributes();
 
-        if (!$productAttributes || count($productAttributes) === 0) {
+        if (count($productAttributes) === 0) {
             return '';
         }
 

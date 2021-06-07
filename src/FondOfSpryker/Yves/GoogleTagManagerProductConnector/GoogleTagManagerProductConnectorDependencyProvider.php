@@ -14,10 +14,11 @@ class GoogleTagManagerProductConnectorDependencyProvider extends AbstractBundleD
     /**
      * @param \Spryker\Yves\Kernel\Container $container
      *
-     * @return Spryker\Yves\Kernel\Container
+     * @return \Spryker\Yves\Kernel\Container
      */
     public function provideDependencies(Container $container): Container
     {
+        $container = parent::provideDependencies($container);
         $container = $this->addIntegerToDecimalConverter($container);
 
         return $container;

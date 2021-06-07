@@ -55,15 +55,19 @@ class DataLayerExpanderTest extends Unit
      */
     public function testExpand(): void
     {
-        $this->productViewTransferMock->expects($this->atLeastOnce())
+        $this->productViewTransferMock->expects(static::atLeastOnce())
+            ->method('getAttributes')
+            ->willReturn([]);
+
+        $this->productViewTransferMock->expects(static::atLeastOnce())
             ->method('getName')
             ->willReturn('PRODUCT_NAME');
 
-        $this->productViewTransferMock->expects($this->atLeastOnce())
+        $this->productViewTransferMock->expects(static::atLeastOnce())
             ->method('getPrice')
             ->willReturn(3999);
 
-        $this->integerToDecimalConverterMock->expects($this->atLeastOnce())
+        $this->integerToDecimalConverterMock->expects(static::atLeastOnce())
             ->method('convert')
             ->willReturn(39.99);
 
@@ -72,9 +76,9 @@ class DataLayerExpanderTest extends Unit
             ModuleConstants::PARAM_PRODUCT_ABSTRACT => $this->productAbstractTransferMock,
         ], []);
 
-        $this->assertArrayHasKey(ModuleConstants::FIELD_ID, $result);
-        $this->assertArrayHasKey(ModuleConstants::FIELD_NAME, $result);
-        $this->assertArrayHasKey(ModuleConstants::FIELD_SKU, $result);
-        $this->assertArrayHasKey(ModuleConstants::FIELD_PRICE, $result);
+        static::assertArrayHasKey(ModuleConstants::FIELD_ID, $result);
+        static::assertArrayHasKey(ModuleConstants::FIELD_NAME, $result);
+        static::assertArrayHasKey(ModuleConstants::FIELD_SKU, $result);
+        static::assertArrayHasKey(ModuleConstants::FIELD_PRICE, $result);
     }
 }

@@ -6,7 +6,7 @@ use Spryker\Shared\Money\Exception\InvalidConverterArgumentException;
 
 class IntegerToDecimalConverter implements IntegerToDecimalConverterInterface
 {
-    public const PRICE_PRECISION = 100;
+    public const PRICE_PRECISION = '100';
 
     /**
      * @param int $value
@@ -24,6 +24,6 @@ class IntegerToDecimalConverter implements IntegerToDecimalConverterInterface
             ));
         }
 
-        return (float)bcdiv($value, static::PRICE_PRECISION, 2);
+        return (float)bcdiv((string)$value, static::PRICE_PRECISION, 2);
     }
 }

@@ -22,11 +22,6 @@ class ProductAbstractTwigParameterBagExpanderPluginTest extends Unit
     protected $factoryMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Yves\GoogleTagManagerProductConnector\GoogleTagManagerProductConnectorConfig
-     */
-    protected $configMock;
-
-    /**
      * @return void
      */
     protected function _before(): void
@@ -35,13 +30,8 @@ class ProductAbstractTwigParameterBagExpanderPluginTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->configMock = $this->getMockBuilder(GoogleTagManagerProductConnectorConfig::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $this->plugin = new ProductAbstractTwigParameterBagExpanderPlugin();
         $this->plugin->setFactory($this->factoryMock);
-        $this->plugin->setConfig($this->configMock);
     }
 
     /**

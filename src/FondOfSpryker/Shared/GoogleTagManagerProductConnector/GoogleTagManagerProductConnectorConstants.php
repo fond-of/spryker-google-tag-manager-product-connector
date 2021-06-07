@@ -19,6 +19,4 @@ interface GoogleTagManagerProductConnectorConstants
     public const FIELD_ID = 'productId';
     public const FIELD_PRICE = 'productPrice';
     public const FIELD_CONTENT_TYPE = 'contentType';
-
-    public const DEFAULT_TAX_RATE = 'DEFAULT_TAX_RATE';
 }
