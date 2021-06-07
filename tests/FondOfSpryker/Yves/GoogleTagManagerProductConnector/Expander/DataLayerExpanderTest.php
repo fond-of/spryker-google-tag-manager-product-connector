@@ -16,7 +16,7 @@ class DataLayerExpanderTest extends Unit
     protected $integerToDecimalConverterMock;
 
     /**
-     * @var DataLayerExpanderInterface
+     * @var \FondOfSpryker\Yves\GoogleTagManagerProductConnector\Expander\DataLayerExpanderInterface
      */
     protected $expander;
 
