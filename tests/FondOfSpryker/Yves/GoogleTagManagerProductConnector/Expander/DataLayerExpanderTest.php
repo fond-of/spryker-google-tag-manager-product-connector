@@ -67,6 +67,10 @@ class DataLayerExpanderTest extends Unit
             ->method('getPrice')
             ->willReturn(3999);
 
+        $this->productViewTransferMock->expects(static::atLeastOnce())
+            ->method('getAvailable')
+            ->willReturn(true);
+
         $this->integerToDecimalConverterMock->expects(static::atLeastOnce())
             ->method('convert')
             ->willReturn(39.99);
@@ -80,5 +84,6 @@ class DataLayerExpanderTest extends Unit
         static::assertArrayHasKey(ModuleConstants::FIELD_NAME, $result);
         static::assertArrayHasKey(ModuleConstants::FIELD_SKU, $result);
         static::assertArrayHasKey(ModuleConstants::FIELD_PRICE, $result);
+        static::assertArrayHasKey(ModuleConstants::FIELD_STOCK, $result);
     }
 }
