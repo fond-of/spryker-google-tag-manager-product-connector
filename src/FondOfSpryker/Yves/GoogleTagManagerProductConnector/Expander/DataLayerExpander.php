@@ -52,6 +52,7 @@ class DataLayerExpander implements DataLayerExpanderInterface
         $dataLayer[ModuleConstants::FIELD_CONTENT_TYPE] = $this->getProductAttrStyle();
         $dataLayer[ModuleConstants::FIELD_SKU] = $this->productViewTransfer->getSku();
         $dataLayer[ModuleConstants::FIELD_PRICE] = $this->getPrice();
+        $dataLayer[ModuleConstants::FIELD_STOCK] = $this->productViewTransfer->getAvailable() === true ? 'in stock' : 'out of stock';
 
         return $dataLayer;
     }
