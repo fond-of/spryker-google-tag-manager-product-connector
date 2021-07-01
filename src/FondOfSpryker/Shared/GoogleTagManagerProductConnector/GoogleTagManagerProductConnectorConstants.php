@@ -20,4 +20,7 @@ interface GoogleTagManagerProductConnectorConstants
     public const FIELD_PRICE = 'productPrice';
     public const FIELD_CONTENT_TYPE = 'contentType';
     public const FIELD_STOCK = 'stock';
+
+    public const IN_STOCK = 'in stock';
+    public const OUT_OF_STOCK = 'out of stock';
 }
