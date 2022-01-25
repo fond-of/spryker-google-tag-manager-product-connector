@@ -70,11 +70,15 @@ class DataLayerExpander implements DataLayerExpanderInterface
             return $this->productViewTransfer->getName();
         }
 
-        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED])) {
+        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED]) &&
+            !empty($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED]))
+        {
             return $productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED];
         }
 
-        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL])) {
+        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL]) &&
+            !empty($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL]))
+        {
             return $productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL];
         }
 
