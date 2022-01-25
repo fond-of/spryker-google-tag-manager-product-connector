@@ -67,7 +67,7 @@ class DataLayerExpander implements DataLayerExpanderInterface
         $productAttributes = $this->productViewTransfer->getAttributes();
 
         if (count($productAttributes) < 1) {
-            return $productViewTransfer->getName();
+            return $this->productViewTransfer->getName();
         }
 
         if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED])) {
