@@ -12,7 +12,9 @@ interface GoogleTagManagerProductConnectorConstants
     public const PARAM_ATTRIBUTE_BRAND = 'brand';
     public const PARAM_ATTRIBUTE_NAME_UNTRANSLATED = 'name_untranslated';
     public const PARAM_PRODUCT_ATTR_STYLE_UNTRANSLATED = 'style_untranslated';
+    public const PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED = 'model_untranslated';
     public const PARAM_PRODUCT_ATTR_STYLE = 'style';
+    public const PARAM_PRODUCT_ATTR_MODEL = 'model';
 
     public const FIELD_NAME = 'productName';
     public const FIELD_SKU = 'productSku';
