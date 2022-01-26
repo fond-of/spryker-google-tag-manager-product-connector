@@ -64,8 +64,22 @@ class DataLayerExpander implements DataLayerExpanderInterface
      */
     protected function getName(): string
     {
-        if (isset($this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_NAME_UNTRANSLATED])) {
-            return $this->productViewTransfer->getAttributes()[ModuleConstants::PARAM_ATTRIBUTE_NAME_UNTRANSLATED];
+        $productAttributes = $this->productViewTransfer->getAttributes();
+
+        if (count($productAttributes) < 1) {
+            return $this->productViewTransfer->getName();
+        }
+
+        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED]) &&
+            !empty($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED]))
+        {
+            return $productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL_UNTRANSLATED];
+        }
+
+        if (isset($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL]) &&
+            !empty($productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL]))
+        {
+            return $productAttributes[ModuleConstants::PARAM_PRODUCT_ATTR_MODEL];
         }
 
         return $this->productViewTransfer->getName();
